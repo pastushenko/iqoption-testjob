@@ -1,7 +1,9 @@
 <?php
 use IqTest\Controller\IndexController;
+use IqTest\Repository\PostRepository;
 
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-
-$indexController = new IndexController();
+$postRepository = new PostRepository();
+$indexController = new IndexController($postRepository);
+$indexController->render();
