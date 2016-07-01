@@ -57,4 +57,31 @@ class PostRepository
 
         return $post;
     }
+
+    /**
+     * @param Post $post
+     * @return bool
+     */
+    public function addPost(Post $post)
+    {
+        $statement = $this->pdo->prepare("
+            INSERT INTO posts (username, email, text, created_at) VALUES (:username, :email, :text, :createdAt);
+        ");
+
+        $statement->bindParam(':username', $post->getUsername());
+        $statement->bindParam(':email', $post->getEmail());
+        $statement->bindParam(':text', $post->getText());
+        $statement->bindParam(':createdAt', $post->getCreatedAt());
+        $statement->bindParam(':ip', $post->getIp());
+        
+        try {
+            $statement->execute();
+            return true;
+        } catch (\PDOException $ex) {
+            var_dump($ex->getMessage());
+            //add loger
+            return false;
+        }
+        
+    }
 }
