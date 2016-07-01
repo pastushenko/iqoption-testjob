@@ -8,6 +8,11 @@ use IqTest\Service\PostValidator;
 class IndexController
 {
     /**
+     * @var array
+     */
+    static public $layoutVars;
+
+    /**
      * @var PostRepository
      */
     private $postRepository;
@@ -29,16 +34,28 @@ class IndexController
 
     public function render()
     {
+        $isPostAdded = false;
+        $isHttpPostRequest = false;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $isHttpPostRequest = true;
             $this->postValidator->setData($_POST);
             if ($this->postValidator->validate()) {
                 $post = $this->postValidator->getPostEntity();
                 $this->addAdditionFieldsToPost($post);
-                $this->postRepository->addPost($post);
-
+                $isPostAdded = $this->postRepository->addPost($post);
+                $this->postValidator->clearData();
             }
         }
+
         $posts = $this->postRepository->getPosts();
+
+        self::$layoutVars = [
+            'validator' => $this->postValidator,
+            'posts' => $posts,
+            'isPostAdded' => $isPostAdded,
+            'isHttpPostRequest' => $isHttpPostRequest
+        ];
+
         $this->renderLayout();
     }
 
@@ -52,7 +69,23 @@ class IndexController
      */
     private function addAdditionFieldsToPost(Post $post)
     {
-        $post->setIp('8.8.8.8');
-        $post->setCreatedAt('2016.01.01 10:10:10');
+        //TODO Mode to some helper getting those parameters
+        $post->setIp($this->getUserIp());
+        $post->setCreatedAt(date('Y-m-d H:i:s'));
+        $post->setUserAgent($_SERVER['HTTP_USER_AGENT']);
+    }
+
+    /**
+     * @return string
+     */
+    private function getUserIp()
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+
+        return $_SERVER['REMOTE_ADDR'];
     }
 }
