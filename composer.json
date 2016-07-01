@@ -1,5 +1,13 @@
 {
     "autoload": {
         "psr-4": {"IqTest\\": "src/IqTest/"}
+    },
+    "require": {
+        "components/bootstrap": "^3.3"
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "mkdir -p public/css && cp -R vendor/components/bootstrap/css/* public/css"
+        ]
     }
 }
