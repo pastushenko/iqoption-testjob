@@ -26,47 +26,47 @@ $isHttpPostRequest = IndexController::$layoutVars['isHttpPostRequest'];
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3">
             <h2>Add post</h2>
-            <?php if ($isHttpPostRequest && $isPostAdded): ?><h3>Post has been added!</h3><?php endif; ?>
-            <?php if ($isHttpPostRequest && !$isPostAdded): ?><h3>Post has not been added!</h3><?php endif; ?>
+            <?php if ($isHttpPostRequest && $isPostAdded): ?><h3 class="text-success">Post has been added!</h3><?php endif; ?>
+            <?php if ($isHttpPostRequest && !$isPostAdded): ?><h3 class="text-danger">Post has not been added!</h3><?php endif; ?>
             <form method="post" action="/">
                 <div class="form-group">
-                    <label for="username">User Name:</label>
-                    <input name="<?= PostValidator::FIELD_USERNAME; ?>" type="text" class="form-control" id="username" placeholder="Username" value="<?= $validator->getField(PostValidator::FIELD_USERNAME); ?>">
+                    <label for="username">User Name*:</label>
+                    <input name="<?= PostValidator::FIELD_USERNAME; ?>" type="text" class="form-control" id="username" placeholder="Username" value="<?= htmlentities($validator->getField(PostValidator::FIELD_USERNAME)); ?>">
                     <?php
                     $error = $validator->getErrorByFieldName(PostValidator::FIELD_USERNAME);
                     if ($error):
                         ?>
-                        <span class="help-inline"><?= $error ?></span>
+                        <span class="help-inline text-danger"><?= $error ?></span>
                     <?php endif; ?>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input name="<?= PostValidator::FIELD_EMAIL; ?>" type="text" class="form-control" id="email" placeholder="Email" value="<?= $validator->getField(PostValidator::FIELD_EMAIL); ?>">
+                    <label for="email">Email*:</label>
+                    <input name="<?= PostValidator::FIELD_EMAIL; ?>" type="text" class="form-control" id="email" placeholder="Email" value="<?= htmlentities($validator->getField(PostValidator::FIELD_EMAIL)); ?>">
                     <?php
                     $error = $validator->getErrorByFieldName(PostValidator::FIELD_EMAIL);
                     if ($error):
                         ?>
-                        <span class="help-inline"><?= $error ?></span>
+                        <span class="help-inline text-danger"><?= $error ?></span>
                     <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <label for="homepage">Homepage:</label>
-                    <input name="<?= PostValidator::FIELD_HOMEPAGE; ?>" type="text" class="form-control" id="homepage" placeholder="http://" value="<?= $validator->getField(PostValidator::FIELD_HOMEPAGE); ?>">
+                    <input name="<?= PostValidator::FIELD_HOMEPAGE; ?>" type="text" class="form-control" id="homepage" placeholder="http://" value="<?= htmlentities($validator->getField(PostValidator::FIELD_HOMEPAGE)); ?>">
                     <?php
                         $error = $validator->getErrorByFieldName(PostValidator::FIELD_HOMEPAGE);
                         if ($error):
                     ?>
-                        <span class="help-inline"><?= $error ?></span>
+                        <span class="help-inline text-danger"><?= $error ?></span>
                     <?php endif; ?>
                 </div>
                 <div class="form-group">
-                    <label for="text">Text:</label>
-                    <textarea name="<?= PostValidator::FIELD_TEXT; ?>" class="form-control" id="text" placeholder="text"><?= $validator->getField(PostValidator::FIELD_TEXT); ?></textarea>
+                    <label for="text">Text*:</label>
+                    <textarea name="<?= PostValidator::FIELD_TEXT; ?>" class="form-control" id="text" placeholder="text"><?= htmlentities($validator->getField(PostValidator::FIELD_TEXT)); ?></textarea>
                     <?php
                     $error = $validator->getErrorByFieldName(PostValidator::FIELD_TEXT);
                     if ($error):
                         ?>
-                        <span class="help-inline"><?= $error ?></span>
+                        <span class="help-inline text-danger"><?= $error ?></span>
                     <?php endif; ?>
                 </div>
                 <button type="submit" class="btn btn-default">Add post</button>
@@ -92,11 +92,11 @@ $isHttpPostRequest = IndexController::$layoutVars['isHttpPostRequest'];
                 <tbody>
                     <?php foreach ($posts as $post): ?>
                     <tr>
-                        <td class="col-lg-1"><?= $post->getEmail(); ?></td>
-                        <td class="col-lg-1"><?= $post->getUsername(); ?></td>
-                        <td class="col-lg-1"><?= $post->getHomepage(); ?></td>
-                        <td class="col-lg-7"><?= $post->getText(); ?></td>
-                        <td class="col-lg-2"><?= $post->getCreatedAt(); ?></td>
+                        <td class="col-lg-1"><?= htmlentities($post->getEmail()); ?></td>
+                        <td class="col-lg-1"><?= htmlentities($post->getUsername()); ?></td>
+                        <td class="col-lg-1"><?= htmlentities($post->getHomepage()); ?></td>
+                        <td class="col-lg-7"><?= htmlentities($post->getText()); ?></td>
+                        <td class="col-lg-2"><?= htmlentities($post->getCreatedAt()); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
