@@ -37,11 +37,11 @@ $postsCount = IndexController::$layoutVars['postsCount'];
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Email</th>
-                        <th>Username</th>
+                        <th><a href="/?<?= $postsFilter->getOppositeOrderQuery(PostsFilter::DB_FIELD_EMAIL)?>">Email</a></th>
+                        <th><a href="/?<?= $postsFilter->getOppositeOrderQuery(PostsFilter::DB_FIELD_USER_NAME)?>">Username</a></th>
                         <th>Homepage</th>
                         <th>Text</th>
-                        <th>Created At</th>
+                        <th><a href="/?<?= $postsFilter->getOppositeOrderQuery(PostsFilter::DB_FIELD_CREATED_AT)?>">Created At</a></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -58,17 +58,18 @@ $postsCount = IndexController::$layoutVars['postsCount'];
                 </table>
             <?php endif; ?>
 
-            <p style="text-align: center">
-                <?php $totalPages = ceil($postsCount / $postsFilter->getLimit()); ?>
-                <?php for($page = 1; $page <= $totalPages; $page++): ?>
-                    <?php if ($page == $postsFilter->getPage()): ?>
-                        <span><?= $page ?></span>
-                    <?php else: ?>
-                        <a href="/?page=<?= $page; ?>&<?= $postsFilter->getQueryWithoutPage();?>"><?= $page ?></a>
-                    <?php endif; ?>
-
-                <?php endfor; ?>
-            </p>
+            <?php $totalPages = ceil($postsCount / $postsFilter->getLimit()); ?>
+            <?php if ($totalPages > 1): ?>
+                <p style="text-align: center">
+                    <?php for($page = 1; $page <= $totalPages; $page++): ?>
+                        <?php if ($page == $postsFilter->getPage()): ?>
+                            <span><?= $page ?></span>
+                        <?php else: ?>
+                            <a href="/?page=<?= $page; ?>&<?= $postsFilter->getQueryWithoutPage();?>"><?= $page ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+                </p>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row">

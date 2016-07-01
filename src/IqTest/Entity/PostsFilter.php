@@ -14,7 +14,7 @@ class PostsFilter
     const PARAM_FIELD = 'order-field';
     const PARAM_DIRECTION = 'order-direction';
 
-    const DEFAULT_RECORDS_PER_PAGE_LIMIT = 3;
+    const DEFAULT_RECORDS_PER_PAGE_LIMIT = 25;
     const DEFAULT_ORDER_FIELD = self::DB_FIELD_CREATED_AT;
     const DEFAULT_ORDER_DIRECTION = self::DIRECTION_DESC;
 
@@ -105,6 +105,25 @@ class PostsFilter
         $queryData = [
             self::PARAM_FIELD => $this->getOrderField(),
             self::PARAM_DIRECTION => $this->getOrderDirection()
+        ];
+        return http_build_query($queryData);
+    }
+
+    /**
+     * @param string $field
+     * @return string
+     */
+    public function getOppositeOrderQuery($field)
+    {
+        $orderDirection = self::DIRECTION_DESC;
+        if ($this->orderField == $field) {
+            if ($this->orderDirection == self::DIRECTION_DESC) {
+                $orderDirection = self::DIRECTION_ASC;
+            }
+        }
+        $queryData = [
+            self::PARAM_FIELD => $field,
+            self::PARAM_DIRECTION => $orderDirection
         ];
         return http_build_query($queryData);
     }
