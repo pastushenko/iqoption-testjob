@@ -2,6 +2,7 @@
 namespace IqTest\Controller;
 
 use IqTest\Entity\Post;
+use IqTest\Entity\PostsFilter;
 use IqTest\Repository\PostRepository;
 use IqTest\Service\PostValidator;
 
@@ -47,7 +48,8 @@ class IndexController
             }
         }
 
-        $posts = $this->postRepository->getPosts();
+        $postsFilter = new PostsFilter($_GET);
+        $posts = $this->postRepository->getPosts($postsFilter);
 
         self::$layoutVars = [
             'validator' => $this->postValidator,

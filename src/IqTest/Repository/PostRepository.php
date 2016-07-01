@@ -10,6 +10,7 @@ namespace IqTest\Repository;
 
 
 use IqTest\Entity\Post;
+use IqTest\Entity\PostsFilter;
 
 class PostRepository
 {
@@ -22,14 +23,32 @@ class PostRepository
     }
 
     /**
+     * @param PostsFilter $postsFilter
      * @return Post[]
      */
-    public function getPosts()
+    public function getPosts(PostsFilter $postsFilter)
     {
-        $rawData = $this->pdo->query('
-            SELECT 
-              id, username, email, homepage, text, created_at, ip, useragent 
-            FROM posts')->fetchAll();
+        $rawData = $this->pdo->query(
+            sprintf(
+            'SELECT 
+                  id, 
+                  username, 
+                  email, 
+                  homepage, 
+                  text, 
+                  created_at, 
+                  ip, 
+                  useragent 
+            FROM posts
+            ORDER BY %s %s
+            LIMIT %d
+            OFFSET %d
+            ',
+            $postsFilter->getOrderField(),
+            $postsFilter->getOrderDirection(),
+            $postsFilter->getLimit(),
+            ($postsFilter->getPage() - 1) * $postsFilter->getLimit()
+        ))->fetchAll();
 
         $posts = [];
         foreach ($rawData as $postData) {
