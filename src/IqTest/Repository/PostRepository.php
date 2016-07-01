@@ -65,19 +65,21 @@ class PostRepository
     public function addPost(Post $post)
     {
         $statement = $this->pdo->prepare("
-            INSERT INTO posts (username, email, text, created_at) VALUES (:username, :email, :text, :createdAt);
+            INSERT INTO posts (username, email, text, created_at, ip, useragent, homepage) VALUES (:username, :email, :text, :created_at, :ip, :user_agent, :homepage);
         ");
 
         $statement->bindParam(':username', $post->getUsername());
         $statement->bindParam(':email', $post->getEmail());
         $statement->bindParam(':text', $post->getText());
-        $statement->bindParam(':createdAt', $post->getCreatedAt());
+        $statement->bindParam(':homepage', $post->getHomepage());
+        $statement->bindParam(':created_at', $post->getCreatedAt());
         $statement->bindParam(':ip', $post->getIp());
+        $statement->bindParam(':user_agent', $post->getUserAgent());
         
         try {
             $statement->execute();
             return true;
-        } catch (\PDOException $ex) {
+        } catch (\Exception $ex) {
             var_dump($ex->getMessage());
             //add loger
             return false;

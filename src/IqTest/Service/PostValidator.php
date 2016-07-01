@@ -60,6 +60,20 @@ class PostValidator
         return $this->validationErrors;
     }
 
+    public function clearData()
+    {
+        $this->data = [];
+    }
+
+    /**
+     * @param string $fieldName
+     * @return string|null
+     */
+    public function getErrorByFieldName($fieldName)
+    {
+        return isset($this->validationErrors[$fieldName]) ? $this->validationErrors[$fieldName] : null;
+    }
+
     private function validateEmail()
     {
         $email = $this->getField(self::FIELD_EMAIL);
@@ -118,6 +132,10 @@ class PostValidator
         }
 
         $homepage = trim($homepage);
+
+        if ($homepage === '') {
+            return;
+        }
 
         if (strlen($homepage) > 255) {
             $this->validationErrors[self::FIELD_HOMEPAGE] = 'Field homepage must contain less then 255 chars.';
