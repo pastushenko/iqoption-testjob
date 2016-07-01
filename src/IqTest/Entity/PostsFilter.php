@@ -98,6 +98,18 @@ class PostsFilter
     }
 
     /**
+     * @return string
+     */
+    public function getQueryWithoutPage()
+    {
+        $queryData = [
+            self::PARAM_FIELD => $this->getOrderField(),
+            self::PARAM_DIRECTION => $this->getOrderDirection()
+        ];
+        return http_build_query($queryData);
+    }
+
+    /**
      * @param array|null $data
      */
     private function fillOrderDirection($data)

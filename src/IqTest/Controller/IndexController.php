@@ -51,9 +51,13 @@ class IndexController
         $postsFilter = new PostsFilter($_GET);
         $posts = $this->postRepository->getPosts($postsFilter);
 
+        $postsCount = $this->postRepository->getPostsCount();
+
         self::$layoutVars = [
             'validator' => $this->postValidator,
             'posts' => $posts,
+            'postsFilter' => $postsFilter,
+            'postsCount' => $postsCount,
             'isPostAdded' => $isPostAdded,
             'isHttpPostRequest' => $isHttpPostRequest
         ];

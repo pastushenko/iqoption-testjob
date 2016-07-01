@@ -2,18 +2,23 @@
 use IqTest\Controller\IndexController;
 use IqTest\Entity\Post;
 use IqTest\Service\PostValidator;
+use IqTest\Entity\PostsFilter;
 
 /**
  * @var PostValidator $validator
  * @var Post[] $posts
  * @var bool $isPostAdded
  * @var bool $isHttpPostRequest
+ * @var PostsFilter $postsFilter
+ * @var int $postsCount
  */
 
 $validator = IndexController::$layoutVars['validator'];
 $posts = IndexController::$layoutVars['posts'];
 $isPostAdded = IndexController::$layoutVars['isPostAdded'];
 $isHttpPostRequest = IndexController::$layoutVars['isHttpPostRequest'];
+$postsFilter = IndexController::$layoutVars['postsFilter'];
+$postsCount = IndexController::$layoutVars['postsCount'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -24,7 +29,50 @@ $isHttpPostRequest = IndexController::$layoutVars['isHttpPostRequest'];
 <body>
     <h1 style="text-align: center">Guestbook</h1>
     <div class="row">
-        <div class="col-lg-6 col-lg-offset-3">
+        <div class="col-lg-8 col-lg-offset-2">
+            <h2>Posts:</h2>
+            <?php if (empty($posts)): ?>
+                <p>There are no posts yet.</p>
+            <?php else: ?>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Homepage</th>
+                        <th>Text</th>
+                        <th>Created At</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($posts as $post): ?>
+                        <tr>
+                            <td class="col-lg-1"><?= htmlentities($post->getEmail()); ?></td>
+                            <td class="col-lg-1"><?= htmlentities($post->getUsername()); ?></td>
+                            <td class="col-lg-1"><?= htmlentities($post->getHomepage()); ?></td>
+                            <td class="col-lg-7"><?= htmlentities($post->getText()); ?></td>
+                            <td class="col-lg-2"><?= htmlentities($post->getCreatedAt()); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+
+            <p style="text-align: center">
+                <?php $totalPages = ceil($postsCount / $postsFilter->getLimit()); ?>
+                <?php for($page = 1; $page <= $totalPages; $page++): ?>
+                    <?php if ($page == $postsFilter->getPage()): ?>
+                        <span><?= $page ?></span>
+                    <?php else: ?>
+                        <a href="/?page=<?= $page; ?>&<?= $postsFilter->getQueryWithoutPage();?>"><?= $page ?></a>
+                    <?php endif; ?>
+
+                <?php endfor; ?>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
             <h2>Add post</h2>
             <?php if ($isHttpPostRequest && $isPostAdded): ?><h3 class="text-success">Post has been added!</h3><?php endif; ?>
             <?php if ($isHttpPostRequest && !$isPostAdded): ?><h3 class="text-danger">Post has not been added!</h3><?php endif; ?>
@@ -71,37 +119,6 @@ $isHttpPostRequest = IndexController::$layoutVars['isHttpPostRequest'];
                 </div>
                 <button type="submit" class="btn btn-default">Add post</button>
             </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-            <h2>Posts:</h2>
-            <?php if (empty($posts)): ?>
-                <p>There are no posts yet.</p>
-            <?php else: ?>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Username</th>
-                        <th>Homepage</th>
-                        <th>Text</th>
-                        <th>Created At</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($posts as $post): ?>
-                    <tr>
-                        <td class="col-lg-1"><?= htmlentities($post->getEmail()); ?></td>
-                        <td class="col-lg-1"><?= htmlentities($post->getUsername()); ?></td>
-                        <td class="col-lg-1"><?= htmlentities($post->getHomepage()); ?></td>
-                        <td class="col-lg-7"><?= htmlentities($post->getText()); ?></td>
-                        <td class="col-lg-2"><?= htmlentities($post->getCreatedAt()); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <?php endif; ?>
         </div>
     </div>
 </body>
