@@ -14,11 +14,14 @@ use IqTest\Entity\PostsFilter;
 
 class PostRepository
 {
-    /** @var  \PDO */
+    /**
+     * @var \PDO
+     */
     private $pdo;
     
     public function __construct()
     {
+        //TODO move to config
         $this->pdo = new \PDO("pgsql:dbname=iqtest2;host=localhost", 'iqtest2', 'iqtest2');
     }
 
@@ -59,25 +62,6 @@ class PostRepository
     }
 
     /**
-     * @param array $postData
-     * @return Post
-     */
-    private function createPostFromData(array $postData)
-    {
-        $post = new Post();
-        $post->setEmail($postData['email']);
-        $post->setCreatedAt($postData['created_at']);
-        $post->setHomepage($postData['homepage']);
-        $post->setId($postData['id']);
-        $post->setIp($postData['ip']);
-        $post->setText($postData['text']);
-        $post->setUsername($postData['username']);
-        $post->setUserAgent($postData['useragent']);
-
-        return $post;
-    }
-
-    /**
      * @param Post $post
      * @return bool
      */
@@ -94,7 +78,7 @@ class PostRepository
         $statement->bindParam(':created_at', $post->getCreatedAt());
         $statement->bindParam(':ip', $post->getIp());
         $statement->bindParam(':user_agent', $post->getUserAgent());
-        
+
         try {
             $statement->execute();
             return true;
@@ -103,6 +87,33 @@ class PostRepository
             //add loger
             return false;
         }
-        
+
+    }
+
+    /**
+     * @return int
+     */
+    public function getPostsCount()
+    {
+        return $this->pdo->query('SELECT COUNT(id) FROM posts;')->fetchColumn();
+    }
+
+    /**
+     * @param array $postData
+     * @return Post
+     */
+    private function createPostFromData(array $postData)
+    {
+        $post = new Post();
+        $post->setEmail($postData['email']);
+        $post->setCreatedAt($postData['created_at']);
+        $post->setHomepage($postData['homepage']);
+        $post->setId($postData['id']);
+        $post->setIp($postData['ip']);
+        $post->setText($postData['text']);
+        $post->setUsername($postData['username']);
+        $post->setUserAgent($postData['useragent']);
+
+        return $post;
     }
 }
